@@ -14,10 +14,15 @@ class gameSprite(sprite.Sprite):
 class PLAYER(gameSprite):
     def update(self, key1, key2):
         KP = key.get_pressed()
-        if KP[key1] and self.rect.x >0:
+        if KP[key1] and self.rect.y >0:
             self.rect.x -= self.speed
-        if KP[key2] and self.rect.x < 625:
+        if KP[key2] and self.rect.y < 425:
             self.rect.x += self.speed
+class ball(gameSprite):
+    def update(self):
+        self.rect.x +=self.speed
+        self.rect.y += self.speed
+ball = ball('asteroid.png', 350, 250, 5, (75, 75))
 
 WINDOW = display.set_mode((700,500))
 WINDOW.fill((255,255,255))
@@ -28,5 +33,10 @@ while True:
     for ev in event.get():
         if ev.type == QUIT:
             exit()
+
+    if game:
+        WINDOW.fill((255,255,255))
+        ball.update()
+        ball.reset()
     display.update()
     clock.tick(60)
