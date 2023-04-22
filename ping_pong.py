@@ -1,5 +1,5 @@
 from pygame import *
-
+font.init()
 class gameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, size):
         super().__init__()
@@ -15,28 +15,56 @@ class PLAYER(gameSprite):
     def update(self, key1, key2):
         KP = key.get_pressed()
         if KP[key1] and self.rect.y >0:
-            self.rect.x -= self.speed
-        if KP[key2] and self.rect.y < 425:
-            self.rect.x += self.speed
+            self.rect.y -= self.speed
+        if KP[key2] and self.rect.y < 400:
+            self.rect.y += self.speed
 class ball(gameSprite):
+    def __init__(self, player_image, player_x, player_y, player_speed, size):
+        super().__init__(player_image, player_x, player_y, player_speed, size)
+        self.speedx = self.speed
+        self.speedy = self.speed
     def update(self):
-        self.rect.x +=self.speed
-        self.rect.y += self.speed
-ball = ball('asteroid.png', 350, 250, 5, (75, 75))
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+        if self.rect.colliderect(pl1):
+            self.speedx *= -1
+            self.rect.x =60
+        if self.rect.colliderect(pl2):
+            self.speedx *= -1
+            self.rect.x =590
+        if self.rect.y <= 0 or self.rect.y >= 450:
+            self.speedy *= -1
 
+
+font = font.SysFont('Areal', 30)
+ball = ball('ball.jpg', 350, 250, 3, (50, 50))
+pl1 = PLAYER('ball.jpg', 50, 100, 3, (10, 100))
+pl2 = PLAYER('ball.jpg', 640, 100, 3, (10, 100))
 WINDOW = display.set_mode((700,500))
-WINDOW.fill((255,255,255))
+WINDOW.fill((240,240,240))
 display.set_caption('ping-pong')
 game = True
 clock = time.Clock()
+win = 'первый игрок'
 while True:
     for ev in event.get():
         if ev.type == QUIT:
             exit()
-
     if game:
         WINDOW.fill((255,255,255))
         ball.update()
         ball.reset()
+        pl1.update(K_w, K_s)
+        pl1.reset()
+        pl2.update(K_UP, K_DOWN)
+        pl2.reset()
+        if ball.rect.x >=700 or ball.rect.x <=-50:
+            game = False
+            show = True
+            if ball.rect.x <=-50:
+                win = 'второй игрок'
+    if not game:
+        WINDOW.blit(font.render('Победил '+win, True, (20,20,20)), (230,100))
+
     display.update()
     clock.tick(60)
