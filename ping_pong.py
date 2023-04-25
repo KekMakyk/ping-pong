@@ -1,4 +1,5 @@
 from pygame import *
+
 font.init()
 class gameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, size):
@@ -10,7 +11,6 @@ class gameSprite(sprite.Sprite):
         self.rect.y = player_y
     def reset(self):
         WINDOW.blit(self.image, (self.rect.x, self.rect.y))
-
 class PLAYER(gameSprite):
     def update(self, key1, key2):
         KP = key.get_pressed()
@@ -28,7 +28,7 @@ class ball(gameSprite):
         self.rect.y += self.speedy
         if self.rect.colliderect(pl1):
             self.speedx *= -1
-            self.rect.x =60
+            self.rect.x =70
         if self.rect.colliderect(pl2):
             self.speedx *= -1
             self.rect.x =590
@@ -36,12 +36,11 @@ class ball(gameSprite):
             self.speedy *= -1
 
 
-font = font.SysFont('Areal', 30)
-ball = ball('ball.jpg', 350, 250, 3, (50, 50))
-pl1 = PLAYER('ball.jpg', 50, 100, 3, (10, 100))
-pl2 = PLAYER('ball.jpg', 640, 100, 3, (10, 100))
+font = font.SysFont('Areal', 40)
+ball = ball('ball.png', 350, 0, 3, (50, 50))
+pl1 = PLAYER('platform.png', 50, 200, 3, (20, 100))
+pl2 = PLAYER('platform.png', 640, 200, 3, (20, 100))
 WINDOW = display.set_mode((700,500))
-WINDOW.fill((240,240,240))
 display.set_caption('ping-pong')
 game = True
 clock = time.Clock()
@@ -50,8 +49,9 @@ while True:
     for ev in event.get():
         if ev.type == QUIT:
             exit()
+
     if game:
-        WINDOW.fill((255,255,255))
+        WINDOW.fill((200,200,200))
         ball.update()
         ball.reset()
         pl1.update(K_w, K_s)
@@ -60,7 +60,6 @@ while True:
         pl2.reset()
         if ball.rect.x >=700 or ball.rect.x <=-50:
             game = False
-            show = True
             if ball.rect.x <=-50:
                 win = 'второй игрок'
     if not game:
